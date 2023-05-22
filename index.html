@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timer and Stopwatch</title>
+  <style>
+    /* CSS styles for the navigation bar */
+    .navbar {
+      background-color: #02091a;
+      overflow: hidden;
+    }
+
+    .navbar a {
+      float: left;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 28px;
+    }
+
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .navbar a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    body {
+      background: url("https://static.pexels.com/photos/6663/desk-white-black-header.jpg") no-repeat center center fixed;
+      background-size: cover; 
+    }
+
+    h1 {
+      color: rgb(238, 14, 10);
+      text-align: center;
+      padding-bottom: 300px;
+      font-size: 70px;
+    }
+
+    .digit {
+      margin-left: 350px;
+      font-size: 150px;
+      color: #f50505e6;
+    }
+
+    .txt {
+      font-size: 30px;
+      color: #f81003;
+    }
+
+    #buttons {
+      margin-top: 300px;
+      margin-left: 42%;
+      
+    }
+
+    .btn {
+      width: 120px;
+      padding: 10px 15px;
+      margin: 0px 20px;
+      border-top-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 4px;
+      border-top-left-radius: 4px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: 0.5s;
+      color: white;
+      font-weight: 500;
+      font-size: 30px;
+    }
+
+    #start {
+      background-color: #009779;
+    }
+
+    #stop {
+      background-color: #0e85fc;
+    }
+
+    #reset {
+      background-color: #c91400;
+    }
+
+    *,:after,:before{box-sizing:border-box}
+    .pull-left{float:left}
+    .pull-right{float:right}
+    .clearfix:after,.clearfix:before{content:'';display:table}
+    .clearfix:after{clear:both;display:block}
+
+    .clock:before,
+    .count:after{
+      content:'';
+      position:absolute;
+    }
+
+    .clock-wrap{
+      margin:auto;
+      width:240px;
+      height:240px;
+      margin-top:100px;
+      position:relative;
+      border-radius:50px;
+      background-color:#fff;
+      box-shadow:0 0 15px rgba(0,0,0,.15);
+    }
+
+    .clock{
+      top:50%;
+      left:50%;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      position:absolute;
+      margin-top:-90px;
+      margin-left:-90px;
+      background-color:#feeff4;
+    }
+
+    .clock:before{
+      top:50%;
+      left:50%;
+      width:120px;
+      height:120px;
+      margin-top:-60px;
+      margin-left:-60px;
+      border-radius:inherit;
+      background-color:#ec366b;
+      box-shadow:0 0 15px rgba(0,0,0,.15), 0 0 3px rgba(255,255,255,.75) inset;
+    }
+
+    .count{
+      width:100%;
+      color:#fff;
+      height:100%;
+      padding:50px;
+      font-size:32px;
+      font-weight:500;
+      line-height:50px;
+      position:absolute;
+      text-align:center;
+    }
+
+    .count:after{
+      width:100%;
+      display:block;
+      font-size:18px;
+      font-weight:300;
+      line-height:18px;
+      text-align:center;
+      position:relative;
+    }
+
+    .count.sec:after{
+      content:'sec'
+    }
+
+    .count.min:after{
+      content:'min'
+    }
+
+    .action{
+      margin-left: 40%;
+      max-width:200px;
+    }
+
+    .action .input{
+      margin-top:30px;
+      position:relative;
+    }
+
+    .action .input-num{
+      width:250%;
+      padding:12px;
+      border-radius:60px;
+      font-size: 50px;
+    }
+
+    .action .input-btn{
+      height: 100%;
+      width: 100%;
+      font-size: 30px;
+      color:#fff;
+      margin-top: 50px;
+      margin-left: 75%;
+      padding:12px;
+      border-radius:60px;
+      background-color:#ec366b;
+      text-transform:uppercase;
+    }
+
+    .tbl{display:table;width:100%}
+    .tbl .col{display:table-cell}
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a class="active" href="#" onclick="showStopwatch()">Stopwatch</a>
+    <a href="#" onclick="showTimer()">Timer</a>
+  </div>
+
+  <div class="container stopwatch">
+    <h1>Stopwatch</h1>
+    <div id="time">
+        <span class="digit" id="hr">00</span>
+        <span class="txt">Hr</span>
+        <span class="digit" id="min">00</span>
+        <span class="txt">Min</span>
+        <span class="digit" id="sec">00</span>
+        <span class="txt">Sec</span>
+        <span class="digit" id="count">00</span>
+    </div>
+    <div id="buttons">
+        <button class="btn" id="start">Start</button>
+        <button class="btn" id="stop">Stop</button>
+        <button class="btn" id="reset">Reset</button>
+    </div>
+  </div>
+
+  <div class="container timer" style="display: none;">
+    <h1>Timer</h1>
+    <div class="clock-wrap">
+      <div class="clock pro-0">
+        <span class="count">0</span>
+      </div>
+    </div>
+    <div class="action">
+      <div class="input">
+        <input class="input-num" type="number" min="1" placeholder="Enter Minute">
+        <input data-action="start" class="input-btn" type="button" value="Start">
+        <input data-action="stop" class="input-btn" type="button" value="Stop">
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function showStopwatch() {
+      $('.stopwatch').show();
+      $('.timer').hide();
+      $('.navbar a').removeClass('active');
+      $('.navbar a:contains("Stopwatch")').addClass('active');
+    }
+
+    function showTimer() {
+      $('.timer').show();
+      $('.stopwatch').hide();
+      $('.navbar a').removeClass('active');
+      $('.navbar a:contains("Timer")').addClass('active');
+    }
+
+    // Show the stopwatch by default
+    showStopwatch();
+    
+    let startBtn = document.getElementById('start');
+    let stopBtn = document.getElementById('stop');
+    let resetBtn = document.getElementById('reset');
+
+    let hour = 0;
+    let minute = 0;
+    let second = 0;
+    let count = 0;
+    let timer = false;
+
+    startBtn.addEventListener('click', function () {
+        timer = true;
+        stopWatch();
+    });
+
+    stopBtn.addEventListener('click', function () {
+        timer = false;
+    });
+
+    resetBtn.addEventListener('click', function () {
+        timer = false;
+        hour = 0;
+        minute = 0;
+        second = 0;
+        count = 0;
+        document.getElementById('hr').innerHTML = "00";
+        document.getElementById('min').innerHTML = "00";
+        document.getElementById('sec').innerHTML = "00";
+        document.getElementById('count').innerHTML = "00";
+    });
+
+    function stopWatch() {
+        if (timer) {
+            count++;
+
+            if (count == 100) {
+                second++;
+                count = 0;
+            }
+
+            if (second == 60) {
+                minute++;
+                second = 0;
+            }
+
+            if (minute == 60) {
+                hour++;
+                minute = 0;
+                second = 0;
+            }
+
+            let hrString = hour < 10 ? "0" + hour : hour;
+            let minString = minute < 10 ? "0" + minute : minute;
+            let secString = second < 10 ? "0" + second : second;
+            let countString = count < 10 ? "0" + count : count;
+
+            document.getElementById('hr').innerHTML = hrString;
+            document.getElementById('min').innerHTML = minString;
+            document.getElementById('sec').innerHTML = secString;
+            document.getElementById('count').innerHTML = countString;
+
+            setTimeout(stopWatch, 10);
+        }
+    }
+
+    $step = 1;
+    $loops = Math.round(100 / $step);
+    $increment = 360 / $loops;
+    $half = Math.round($loops / 2);
+    $barColor = '#ec366b';
+    $backColor = '#feeff4';
+
+    $(function(){
+      clock.init();
+    });
+
+    clock={
+      interval:null,
+      init:function(){
+        $('.input-btn').click(function(){
+          switch($(this).data('action')){
+            case 'start':
+              clock.stop();
+              clock.start($('.input-num').val());
+              break;
+            case 'stop':
+              clock.stop();
+              break;
+          }
+        });
+      },
+      start:function(t){
+        var pie = 0;
+        var num = 0;
+        var min = t ? t : 1;
+        var sec = min * 60;
+        var lop = sec;
+        $('.count').text(min);
+        if(min > 0){
+          $('.count').addClass('min');
+        }else{
+          $('.count').addClass('sec');
+        }
+        clock.interval = setInterval(function(){
+          sec = sec - 1;
+          if(min > 1){
+            pie = pie + (100 / (lop / min));
+          }else{
+            pie = pie + (100 / lop);
+          }
+          if(pie >= 101){
+            pie = 1;
+          }
+          num = (sec / 60).toFixed(2).slice(0, -3);
+          if(num == 0){
+            $('.count').removeClass('min').addClass('sec').text(sec);
+          }else{
+            $('.count').removeClass('sec').addClass('min').text(num);
+          }
+          $i = (pie.toFixed(2).slice(0, -3)) - 1;
+          if($i < $half){
+            $('.pro-0').css('background-image','linear-gradient('+(270 + ($i * $increment))+'deg, transparent 50%, '+$backColor+' 50%),linear-gradient(90deg, '+$backColor+' 50%, transparent 50%)');
+          }else if($i == $half){
+            $('.pro-0').css('background-image','linear-gradient(to right, '+$backColor+' 50%, transparent 50%)');
+          }else{
+            $('.pro-0').css('background-image','linear-gradient('+(270 + ($i * $increment))+'deg, transparent 50%, '+$barColor+' 50%),linear-gradient(90deg, '+$backColor+' 50%, transparent 50%)');
+          }
+          if(sec == 0){
+            clock.stop();
+          }
+        },1000);
+      },
+      stop:function(){
+        clearInterval(clock.interval);
+      }
+    };
+  </script>
+</body>
+</html>
